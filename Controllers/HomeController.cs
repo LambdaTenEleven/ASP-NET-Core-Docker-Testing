@@ -6,16 +6,20 @@ namespace DotNetDockerCats.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index()
     {
-        _logger = logger;
-    }
+        const string uri = "https://api.thecatapi.com/v1/images/search";
 
-    public IActionResult Index()
-    {
-        return View();
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+
+        var client = new HttpClient();
+        var response = await client.SendAsync(httpRequestMessage);
+
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadFromJsonAsync<List<CatImageViewModel>>();
+
+        return View(json.FirstOrDefault());
     }
 
     public IActionResult Privacy()
