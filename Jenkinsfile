@@ -3,7 +3,9 @@ pipeline {
         stages {
             stage('Cleanup') {
                 steps {
-                    sh 'docker kill $(docker ps -q)'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        sh 'docker kill $(docker ps -q)'
+                    }
                     sh 'docker system prune -f'
                 }
             }
