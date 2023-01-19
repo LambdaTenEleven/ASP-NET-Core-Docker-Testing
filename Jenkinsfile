@@ -1,6 +1,11 @@
 pipeline {
     agent any
         stages {
+            stage('Cleanup') {
+                steps {
+                    sh 'docker system prune -f'
+                }
+            }
             stage('Build') {
                 steps {
                     sh 'docker build -t aspnetapp .'
